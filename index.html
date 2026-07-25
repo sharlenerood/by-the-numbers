@@ -10,13 +10,12 @@
     .afcb-wrap {
       --afcb-orange: #E8862A;
       --afcb-green: #2F6B3B;
-      --afcb-text-muted: #6B6B66;
 
       font-family: 'Roboto', Arial, sans-serif;
       background: #FFFFFF;
       max-width: 900px;
       margin: 0 auto;
-      padding: 8px 0;
+      padding: 8px 0 0;
       box-sizing: border-box;
     }
     .afcb-wrap *, .afcb-wrap *::before, .afcb-wrap *::after {
@@ -25,27 +24,11 @@
 
     .afcb-row {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       gap: 16px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 640px) {
-      .afcb-row {
-        flex-direction: column;
-      }
-      /* FIX: let cards size to their content on mobile so there's no dead space */
-      .afcb-card {
-        min-height: auto;
-      }
-      /* FIX: remove bottom padding so the last card sits flush with CMS text */
-      .afcb-wrap {
-        padding-bottom: 0;
-      }
     }
 
     .afcb-card {
-      flex: 1 1 0;
       border-radius: 18px;
       padding: 28px 22px 26px;
       color: #ffffff;
@@ -53,7 +36,6 @@
       opacity: 0;
       transform: translateY(18px);
       transition: opacity 0.55s ease, transform 0.55s ease;
-      min-height: 190px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
