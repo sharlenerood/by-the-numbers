@@ -1,0 +1,181 @@
+
+<div class="afcb-wrap">
+
+  <div class="afcb-row">
+    <!-- cards are injected by JS from the cards array -->
+  </div>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+    .afcb-wrap {
+      --afcb-orange: #E8862A;
+      --afcb-green: #2F6B3B;
+      --afcb-text-muted: #6B6B66;
+
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #5F5D5C;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 8px 0;
+      box-sizing: border-box;
+    }
+    .afcb-wrap *, .afcb-wrap *::before, .afcb-wrap *::after {
+      box-sizing: border-box;
+    }
+
+    .afcb-row {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 640px) {
+      .afcb-row {
+        flex-direction: column;
+      }
+    }
+
+    .afcb-card {
+      flex: 1 1 0;
+      border-radius: 18px;
+      padding: 28px 22px 26px;
+      color: #ffffff;
+      position: relative;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .afcb-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .afcb-card.afcb-orange { background: var(--afcb-orange); }
+    .afcb-card.afcb-green  { background: var(--afcb-green); }
+
+    .afcb-index {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .afcb-figure {
+      font-size: clamp(30px, 6.5vw, 40px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 18px 0 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .afcb-label {
+      font-size: clamp(15px, 3vw, 17px);
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .afcb-label.is-visible {
+      opacity: 1;
+    }
+    .afcb-label strong {
+      font-weight: 700;
+    }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.parentNode;
+
+    /* ---- EDIT YOUR CARDS HERE ---- */
+    var cards = [
+      {
+        value: 589.3,
+        prefix: 'R',
+        suffix: 'm',
+        label: 'Employee <strong>costs</strong>',
+        color: 'orange'
+      },
+      {
+        value: 321.1,
+        prefix: 'R',
+        suffix: 'm',
+        label: 'Promotion, advertising, websites and magazine <strong>costs</strong>',
+        color: 'green'
+      },
+      {
+        value: 303.1,
+        prefix: 'R',
+        suffix: 'm',
+        label: 'Projects &mdash; strategic, support and legal',
+        color: 'orange'
+      }
+    ];
+    /* ------------------------------- */
+
+    var rowEl = root.querySelector('.afcb-row');
+    var items = [];
+
+    cards.forEach(function (c, i) {
+      var card = document.createElement('div');
+      card.className = 'afcb-card afcb-' + c.color;
+      card.innerHTML =
+        '<div class="afcb-index">' + (i + 1) + '.</div>' +
+        '<div class="afcb-figure">' + c.prefix + '0' + c.suffix + '</div>' +
+        '<div class="afcb-label">' + c.label + '</div>';
+      rowEl.appendChild(card);
+
+      items.push({
+        el: card,
+        figureEl: card.querySelector('.afcb-figure'),
+        labelEl: card.querySelector('.afcb-label'),
+        data: c
+      });
+    });
+
+    function countUp(el, target, prefix, suffix, duration) {
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / duration, 1);
+        var val = (target * p).toFixed(1);
+        el.textContent = prefix + val + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function reveal() {
+      items.forEach(function (it, i) {
+        var delay = i * 350;
+        setTimeout(function () {
+          it.el.classList.add('is-visible');
+          countUp(it.figureEl, it.data.value, it.data.prefix, it.data.suffix, 1100);
+        }, delay);
+        setTimeout(function () {
+          it.labelEl.classList.add('is-visible');
+        }, delay + 450);
+      });
+    }
+
+    var triggered = false;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !triggered) {
+          triggered = true;
+          reveal();
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    io.observe(rowEl);
+  })();
+  </script>
+
+</div>
